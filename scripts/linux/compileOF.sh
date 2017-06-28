@@ -25,7 +25,7 @@ while getopts tj: opt ; do
 done
 
 cd ${SCRIPTPATH}/../../libs/openFrameworksCompiled/project
-make -j$JOBS Debug
+make -j$JOBS Debug SHAREDCORE=1
 exit_code=$?
 if [ $exit_code != 0 ]; then
   echo "there has been a problem compiling Debug OF library"
@@ -34,7 +34,7 @@ if [ $exit_code != 0 ]; then
 fi
 
 if [ "$BUILD" == "install" ]; then
-    make -j$JOBS Release
+    make -j$JOBS Release SHAREDCORE=1
     exit_code=$?
     if [ $exit_code != 0 ]; then
       echo "there has been a problem compiling Release OF library"

@@ -42,6 +42,9 @@ endif
 # clean it
 ALL_CFLAGS =
 
+# need -fPIC for Ruby compatability
+ALL_CFLAGS += -fPIC
+
 # add the core flags (platform flags are aggregated in here)
 ALL_CFLAGS += $(OF_CORE_BASE_CFLAGS)
 # add the defines
