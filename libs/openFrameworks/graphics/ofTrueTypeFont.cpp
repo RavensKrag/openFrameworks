@@ -444,14 +444,23 @@ static std::string linuxFontPathByName(const std::string& fontname){
 #endif
 
 //-----------------------------------------------------------
-static bool loadFontFace(const std::filesystem::path& _fontname, FT_Face & face, std::filesystem::path & filename){
-	std::filesystem::path fontname;
-	filename = ofToDataPath(_fontname,true);
+static bool loadFontFace(const std::filesystem::path& fontname, FT_Face & face, std::filesystem::path & filename){
+	// std::filesystem::path fontname;
+	// filename = ofToDataPath(_fontname,true);
+	filename = ofToDataPath(fontname,true);
+	
 	ofFile fontFile(filename,ofFile::Reference);
+	
+	ofLog() << "filename:" << filename << "\n";
+	ofLog() << "fontFile:" << fontFile.exists() << "\n";
+	
 	int fontID = 0;
 	if(!fontFile.exists()){
 #ifdef TARGET_LINUX
+        ofLog() << "linux font fallback mode...\n";
+        ofLog() << "loadFontFace => fontname.string():" << fontname.string() << "\n";
         filename = linuxFontPathByName(fontname.string());
+        ofLog() << "loadFontFace => filename:" << filename << "\n";
 #elif defined(TARGET_OSX)
 		if(fontname==OF_TTF_SANS){
 			fontname = "Helvetica Neue";
@@ -487,6 +496,10 @@ static bool loadFontFace(const std::filesystem::path& _fontname, FT_Face & face,
 		ofLogError("ofTrueTypeFont") << "loadFontFace(): couldn't create new face for \"" << fontname << "\": FT_Error " << err << " " << errorString;
 		return false;
 	}
+	
+	
+	ofLog() << "final filename:" << filename.string() << "\n";
+	ofLog() << "font successfully loaded\n";
 
 	return true;
 }
@@ -792,6 +805,8 @@ bool ofTrueTypeFont::load(const ofTtfSettings & _settings){
 	bLoadedOk = false;
 
 	//--------------- load the library and typeface
+	ofLog() << "font name in settings:" << settings.fontName << "\n ";
+	
 	FT_Face loadFace;
     if(!loadFontFace(settings.fontName, loadFace, settings.fontName)){
 		return false;
